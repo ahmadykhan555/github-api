@@ -1,10 +1,8 @@
-import './App.css';
-
 function App() {
   return (
-    <>
-      <p className="text-3xl text-blue-500 font-bold">Hello World</p>
-    </>
+    <div className='p-4 md:p-10'>
+      <p className="text-3xl text-center text-white uppercase  font-bold">Hello World</p>
+    </div>
   );
 }
 

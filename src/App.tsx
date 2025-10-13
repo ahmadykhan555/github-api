@@ -1,7 +1,9 @@
+import Header from './components/Header';
+
 function App() {
   return (
-    <div className='p-4 md:p-10'>
-      <p className="text-3xl text-center text-white uppercase  font-bold">Hello World</p>
+    <div className="min-h-screen bg-gray-800">
+      <Header />
     </div>
   );
 }

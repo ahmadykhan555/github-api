@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { GitHubUser, GitHubSearchResponse, UseUsersReturn } from '../types/github';
-
-const GITHUB_API_BASE = 'https://api.github.com';
+import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
 
 export const useUsers = (): UseUsersReturn => {
   const [users, setUsers] = useState<GitHubUser[]>([]);
@@ -19,7 +18,7 @@ export const useUsers = (): UseUsersReturn => {
 
     try {
       const response = await fetch(
-        `${GITHUB_API_BASE}/search/users?q=${encodeURIComponent(query)}&per_page=20`
+        `${GITHUB_API_BASE}/search/users?q=${encodeURIComponent(query)}&per_page=${USER_SEARCH_LIMIT}`
       );
 
       if (!response.ok) {

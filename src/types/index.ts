@@ -1,1 +1,1 @@
-export type { GitHubUser, GitHubSearchResponse, UseUsersReturn } from './github';
+export type { GitHubUser, GitHubSearchResponse, UseUsersReturn, GitHubRepository } from './github';

@@ -4,15 +4,18 @@ import { useDebounce } from '../../hooks/useDebounce';
 import type { GitHubUser } from '../../types/github';
 import UserCard from './UserCard';
 import useGlobalStore from '../../store/useGlobalStore';
+import { UserListLoadingState } from './UserListLoadingState';
+import { UserListEmptyState } from './UserListEmptyState';
+import { UserListErrorState } from './UserListErrorState';
 
 interface UserListProps {
-  searchTerm: string;
+  // add props here if needed
 }
 
-const UserList: React.FC<UserListProps> = ({ searchTerm }) => {
+const UserList: React.FC<UserListProps> = () => {
   const { loading, error, searchUsers, clearUsers } = useUsers();
-  const { userSearchResults: users } = useGlobalStore();
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const { userSearchResults: users, searchTerm } = useGlobalStore();
+  const debouncedSearchTerm = useDebounce(searchTerm);
 
   useEffect(() => {
     if (debouncedSearchTerm.trim()) {
@@ -23,36 +26,15 @@ const UserList: React.FC<UserListProps> = ({ searchTerm }) => {
   }, [debouncedSearchTerm, searchUsers, clearUsers]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        <span className="ml-2 text-gray-400">Searching users...</span>
-      </div>
-    );
+    return <UserListLoadingState />;
   }
 
   if (error) {
-    return (
-      <div className="text-red-400 text-center py-4">
-        <p>Error: {error}</p>
-      </div>
-    );
+    return <UserListErrorState error={error} />;
   }
 
-  if (!searchTerm.trim()) {
-    return (
-      <div className="text-gray-400 text-center py-8">
-        <p>Enter a username above to search for GitHub users</p>
-      </div>
-    );
-  }
-
-  if (users.length === 0) {
-    return (
-      <div className="text-gray-400 text-center py-8">
-        <p>No users found for "{searchTerm}"</p>
-      </div>
-    );
+  if (!searchTerm.trim() || users.length === 0) {
+    return <UserListEmptyState loading={loading} />;
   }
 
   return (

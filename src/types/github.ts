@@ -31,3 +31,12 @@ export interface UseUsersReturn {
   searchUsers: (query: string) => Promise<void>;
   clearUsers: () => void;
 }
+
+export interface GitHubRepository {
+  id: number;
+  name: string;
+  html_url: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+}

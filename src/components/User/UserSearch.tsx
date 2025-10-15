@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import UserList from './UserList';
+import useGlobalStore from '../../store/useGlobalStore';
 const UserSearch: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const { searchTerm, setSearchTerm } = useGlobalStore();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -32,7 +33,7 @@ const UserSearch: React.FC = () => {
       <div className="w-full max-w-4xl">
         <div className="bg-gray-700 rounded-lg p-6 min-h-[200px] ">
           <h3 className="text-white text-lg font-semibold mb-4">Search Results</h3>
-          <UserList searchTerm={searchTerm} />
+          <UserList />
         </div>
       </div>
     </div>

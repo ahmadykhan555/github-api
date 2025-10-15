@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import UserList from './UserList';
 const UserSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -7,15 +7,24 @@ const UserSearch: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
       <div className="w-full max-w-md mb-8">
         <input
+          ref={inputRef}
           type="text"
           placeholder="Search for a GitHub user..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent"
         />
       </div>
 

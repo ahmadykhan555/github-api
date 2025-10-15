@@ -1,19 +1,26 @@
 import { useState, useCallback } from 'react';
-import type { GitHubUser, GitHubSearchResponse, UseUsersReturn } from '../types/github';
+import type { GitHubRepository, GitHubSearchResponse, UseUsersReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
+import useGlobalStore from '../store/useGlobalStore';
 
 export const useUsers = (): UseUsersReturn => {
-  const [users, setUsers] = useState<GitHubUser[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const {
+    userSearchResults,
+    setUserSearchResults,
+    setIsLoadingUsers,
+    setUserRepositories,
+    setIsLoadingRepositories,
+  } = useGlobalStore();
+
   const [error, setError] = useState<string | null>(null);
 
   const searchUsers = useCallback(async (query: string) => {
     if (!query.trim()) {
-      setUsers([]);
+      setUserSearchResults([]);
       return;
     }
 
-    setLoading(true);
+    setIsLoadingUsers(true);
     setError(null);
 
     try {
@@ -29,26 +36,50 @@ export const useUsers = (): UseUsersReturn => {
       }
 
       const data: GitHubSearchResponse = await response.json();
-      setUsers(data.items);
+      setUserSearchResults(data.items);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
       setError(errorMessage);
-      setUsers([]);
+      setUserSearchResults([]);
     } finally {
-      setLoading(false);
+      setIsLoadingUsers(false);
     }
   }, []);
 
   const clearUsers = useCallback(() => {
-    setUsers([]);
+    setUserSearchResults([]);
     setError(null);
   }, []);
 
+  const getUserRepositories = useCallback(async (username: string) => {
+    setUserRepositories([]);
+    setIsLoadingRepositories(true);
+    try {
+      const response = await fetch(`${GITHUB_API_BASE}/users/${username}/repos`);
+      const data: GitHubRepository[] = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error('GitHub API rate limit exceeded. Please try again later.');
+        }
+        throw new Error(`Failed to fetch user repositories: ${response.statusText}`);
+      }
+
+      setUserRepositories(data);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      setError(errorMessage);
+      setUserRepositories([]);
+    } finally {
+      setIsLoadingRepositories(false);
+    }
+  }, []);
+
   return {
-    users,
-    loading,
+    users: userSearchResults,
     error,
     searchUsers,
     clearUsers,
+    getUserRepositories,
   };
 };

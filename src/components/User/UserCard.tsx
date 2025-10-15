@@ -1,8 +1,24 @@
+import useGlobalStore from '../../store/useGlobalStore';
 import type { GitHubUser } from '../../types';
+import { UserRepositoriesList } from './UserRepositoriesList';
 
 const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
+  const { setSelectedUser, selectedUser } = useGlobalStore();
+
+  const toggleUserSelection = () => {
+    if (selectedUser?.id === user.id) {
+      setSelectedUser(null);
+    } else {
+      setSelectedUser(user);
+    }
+  };
+
   return (
-    <div className="bg-gray-600 rounded-lg p-4 hover:bg-gray-500 transition-colors ">
+    <div
+      className={`bg-gray-600 rounded-lg p-4 hover:bg-gray-500 transition-colors  cursor-pointer`}
+      onClick={toggleUserSelection}
+    >
+      {/* user information like name avatar etc */}
       <div className="flex items-center space-x-3">
         <img
           src={user.avatar_url}
@@ -27,6 +43,8 @@ const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
           </div>
         </div>
       </div>
+      {/* user repositories information */}
+      {selectedUser?.id === user.id && <UserRepositoriesList />}
     </div>
   );
 };

@@ -26,8 +26,17 @@ export interface GitHubSearchResponse {
 
 export interface UseUsersReturn {
   users: GitHubUser[];
-  loading: boolean;
   error: string | null;
   searchUsers: (query: string) => Promise<void>;
   clearUsers: () => void;
+  getUserRepositories: (username: string) => Promise<void>;
+}
+
+export interface GitHubRepository {
+  id: number;
+  name: string;
+  html_url: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
 }

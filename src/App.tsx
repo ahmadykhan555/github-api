@@ -1,6 +1,6 @@
 import Header from './components/Header';
 import Footer from './components/Footer';
-import UserSearch from './components/UserSearch';
+import UserSearch from './components/User/UserSearch';
 
 function App() {
   return (

@@ -1,8 +1,8 @@
 import useGlobalStore from '../../store/useGlobalStore';
 
-export const UserListEmptyState: React.FC<{ loading: boolean }> = ({ loading }) => {
-  const { searchTerm } = useGlobalStore();
-  return loading ? (
+export const UserListEmptyState: React.FC<{}> = () => {
+  const { searchTerm, isLoadingUsers } = useGlobalStore();
+  return isLoadingUsers ? (
     <div className="text-gray-400 text-center py-8">
       <p>Enter a username above to search for GitHub users</p>
     </div>

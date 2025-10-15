@@ -4,8 +4,8 @@ import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
 import useGlobalStore from '../store/useGlobalStore';
 
 export const useUsers = (): UseUsersReturn => {
-  const { userSearchResults, setUserSearchResults } = useGlobalStore();
-  const [loading, setLoading] = useState<boolean>(false);
+  const { userSearchResults, setUserSearchResults, setIsLoadingUsers } = useGlobalStore();
+
   const [error, setError] = useState<string | null>(null);
 
   const searchUsers = useCallback(async (query: string) => {
@@ -14,7 +14,7 @@ export const useUsers = (): UseUsersReturn => {
       return;
     }
 
-    setLoading(true);
+    setIsLoadingUsers(true);
     setError(null);
 
     try {
@@ -36,7 +36,7 @@ export const useUsers = (): UseUsersReturn => {
       setError(errorMessage);
       setUserSearchResults([]);
     } finally {
-      setLoading(false);
+      setIsLoadingUsers(false);
     }
   }, []);
 
@@ -47,7 +47,6 @@ export const useUsers = (): UseUsersReturn => {
 
   return {
     users: userSearchResults,
-    loading,
     error,
     searchUsers,
     clearUsers,

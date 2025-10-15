@@ -6,6 +6,8 @@ interface AppState {
   selectedUser: GitHubUser | null;
   userRepositories: GitHubRepository[];
   searchTerm: string;
+  isLoadingUsers: boolean;
+  setIsLoadingUsers: (isLoadingUsers: boolean) => void;
   setUserSearchResults: (userSearchResults: GitHubUser[]) => void;
   setSelectedUser: (selectedUser: GitHubUser | null) => void;
   setUserRepositories: (userRepositories: GitHubRepository[]) => void;
@@ -17,10 +19,12 @@ const useGlobalStore = create<AppState>((set) => ({
   selectedUser: null,
   userRepositories: [],
   searchTerm: '',
+  isLoadingUsers: false,
   setUserSearchResults: (userSearchResults: GitHubUser[]) => set({ userSearchResults }),
   setSelectedUser: (selectedUser: GitHubUser | null) => set({ selectedUser }),
   setUserRepositories: (userRepositories: GitHubRepository[]) => set({ userRepositories }),
   setSearchTerm: (searchTerm: string) => set({ searchTerm }),
+  setIsLoadingUsers: (isLoadingUsers: boolean) => set({ isLoadingUsers }),
 }));
 
 export default useGlobalStore;

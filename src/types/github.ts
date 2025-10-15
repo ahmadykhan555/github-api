@@ -26,7 +26,6 @@ export interface GitHubSearchResponse {
 
 export interface UseUsersReturn {
   users: GitHubUser[];
-  loading: boolean;
   error: string | null;
   searchUsers: (query: string) => Promise<void>;
   clearUsers: () => void;

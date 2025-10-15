@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import { useUsers } from '../hooks/useUsers';
-import { useDebounce } from '../hooks/useDebounce';
-import type { GitHubUser } from '../types/github';
-import UserCard from './User/UserCard';
+import { useUsers } from '../../hooks/useUsers';
+import { useDebounce } from '../../hooks/useDebounce';
+import type { GitHubUser } from '../../types/github';
+import UserCard from './UserCard';
+import useStore from '../../store/useStore';
 
 interface UserListProps {
   searchTerm: string;
 }
 
 const UserList: React.FC<UserListProps> = ({ searchTerm }) => {
-  const { users, loading, error, searchUsers, clearUsers } = useUsers();
+  const { loading, error, searchUsers, clearUsers } = useUsers();
+  const { userSearchResults: users } = useStore();
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {

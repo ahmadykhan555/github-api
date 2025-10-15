@@ -1,15 +1,16 @@
 import { useState, useCallback } from 'react';
-import type { GitHubUser, GitHubSearchResponse, UseUsersReturn } from '../types/github';
+import type { GitHubSearchResponse, UseUsersReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
+import useGlobalStore from '../store/useGlobalStore';
 
 export const useUsers = (): UseUsersReturn => {
-  const [users, setUsers] = useState<GitHubUser[]>([]);
+  const { userSearchResults, setUserSearchResults } = useGlobalStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const searchUsers = useCallback(async (query: string) => {
     if (!query.trim()) {
-      setUsers([]);
+      setUserSearchResults([]);
       return;
     }
 
@@ -29,23 +30,23 @@ export const useUsers = (): UseUsersReturn => {
       }
 
       const data: GitHubSearchResponse = await response.json();
-      setUsers(data.items);
+      setUserSearchResults(data.items);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
       setError(errorMessage);
-      setUsers([]);
+      setUserSearchResults([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
   const clearUsers = useCallback(() => {
-    setUsers([]);
+    setUserSearchResults([]);
     setError(null);
   }, []);
 
   return {
-    users,
+    users: userSearchResults,
     loading,
     error,
     searchUsers,

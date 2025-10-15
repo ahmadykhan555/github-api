@@ -3,7 +3,7 @@ import { useUsers } from '../../hooks/useUsers';
 import { useDebounce } from '../../hooks/useDebounce';
 import type { GitHubUser } from '../../types/github';
 import UserCard from './UserCard';
-import useStore from '../../store/useStore';
+import useGlobalStore from '../../store/useGlobalStore';
 
 interface UserListProps {
   searchTerm: string;
@@ -11,7 +11,7 @@ interface UserListProps {
 
 const UserList: React.FC<UserListProps> = ({ searchTerm }) => {
   const { loading, error, searchUsers, clearUsers } = useUsers();
-  const { userSearchResults: users } = useStore();
+  const { userSearchResults: users } = useGlobalStore();
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {

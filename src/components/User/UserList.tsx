@@ -13,8 +13,8 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = () => {
-  const { error, searchUsers, clearUsers } = useUsers();
-  const { userSearchResults: users, searchTerm, isLoadingUsers } = useGlobalStore();
+  const { error, searchUsers, clearUsers, getUserRepositories } = useUsers();
+  const { userSearchResults: users, searchTerm, isLoadingUsers, selectedUser } = useGlobalStore();
   const debouncedSearchTerm = useDebounce(searchTerm);
 
   useEffect(() => {
@@ -24,6 +24,12 @@ const UserList: React.FC<UserListProps> = () => {
       clearUsers();
     }
   }, [debouncedSearchTerm, searchUsers, clearUsers]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      getUserRepositories(selectedUser.login);
+    }
+  }, [selectedUser, getUserRepositories]);
 
   if (isLoadingUsers) {
     return <UserListLoadingState />;

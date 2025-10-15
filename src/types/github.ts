@@ -29,6 +29,7 @@ export interface UseUsersReturn {
   error: string | null;
   searchUsers: (query: string) => Promise<void>;
   clearUsers: () => void;
+  getUserRepositories: (username: string) => Promise<void>;
 }
 
 export interface GitHubRepository {

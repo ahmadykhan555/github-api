@@ -1,10 +1,16 @@
 import { useState, useCallback } from 'react';
-import type { GitHubSearchResponse, UseUsersReturn } from '../types/github';
+import type { GitHubRepository, GitHubSearchResponse, UseUsersReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
 import useGlobalStore from '../store/useGlobalStore';
 
 export const useUsers = (): UseUsersReturn => {
-  const { userSearchResults, setUserSearchResults, setIsLoadingUsers } = useGlobalStore();
+  const {
+    userSearchResults,
+    setUserSearchResults,
+    setIsLoadingUsers,
+    setUserRepositories,
+    setIsLoadingRepositories,
+  } = useGlobalStore();
 
   const [error, setError] = useState<string | null>(null);
 
@@ -45,10 +51,34 @@ export const useUsers = (): UseUsersReturn => {
     setError(null);
   }, []);
 
+  const getUserRepositories = useCallback(async (username: string) => {
+    setIsLoadingRepositories(true);
+    try {
+      const response = await fetch(`${GITHUB_API_BASE}/users/${username}/repos`);
+      const data: GitHubRepository[] = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error('GitHub API rate limit exceeded. Please try again later.');
+        }
+        throw new Error(`Failed to fetch user repositories: ${response.statusText}`);
+      }
+
+      setUserRepositories(data);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      setError(errorMessage);
+      setUserRepositories([]);
+    } finally {
+      setIsLoadingRepositories(false);
+    }
+  }, []);
+
   return {
     users: userSearchResults,
     error,
     searchUsers,
     clearUsers,
+    getUserRepositories,
   };
 };

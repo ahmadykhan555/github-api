@@ -1,8 +1,9 @@
 import useGlobalStore from '../../store/useGlobalStore';
 import type { GitHubUser } from '../../types';
+import { UserRepositoriesList } from './UserRepositoriesList';
 
 const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
-  const { setSelectedUser, selectedUser, userRepositories } = useGlobalStore();
+  const { setSelectedUser, selectedUser } = useGlobalStore();
 
   const toggleUserSelection = () => {
     if (selectedUser?.id === user.id) {
@@ -14,7 +15,7 @@ const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
 
   return (
     <div
-      className={`bg-gray-600 rounded-lg p-4 hover:bg-gray-500 transition-colors border border-red-500 cursor-pointer ${selectedUser?.id === user.id ? 'col-span-12 row-start-1' : ''} `}
+      className={`bg-gray-600 rounded-lg p-4 hover:bg-gray-500 transition-colors  cursor-pointer`}
       onClick={toggleUserSelection}
     >
       {/* user information like name avatar etc */}
@@ -43,17 +44,7 @@ const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
         </div>
       </div>
       {/* user repositories information */}
-      {selectedUser?.id === user.id && (
-        <div>
-          {userRepositories.map((repository) => (
-            <div key={repository.id}>
-              <a href={repository.html_url} target="_blank" rel="noopener noreferrer">
-                {repository.name}
-              </a>
-            </div>
-          ))}
-        </div>
-      )}
+      {selectedUser?.id === user.id && <UserRepositoriesList />}
     </div>
   );
 };

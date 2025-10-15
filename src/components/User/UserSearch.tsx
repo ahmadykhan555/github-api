@@ -18,7 +18,7 @@ const UserSearch: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-      <div className="w-full max-w-md mb-8">
+      <div className="w-full max-w-md my-8">
         <input
           ref={inputRef}
           type="text"

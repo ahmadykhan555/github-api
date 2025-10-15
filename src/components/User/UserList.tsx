@@ -44,12 +44,12 @@ const UserList: React.FC<UserListProps> = () => {
   }
 
   return (
-    <div>
-      <p className="text-gray-400 mb-4">
+    <div className="flex flex-col max-h-full ">
+      <p className="text-gray-400 mb-4 ">
         Showing {users.length} results for:{' '}
         <span className="text-white font-medium">"{searchTerm}"</span>
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex-1 grid grid-cols-1 gap-4  overflow-y-auto">
         {users.map((user: GitHubUser) => (
           <UserCard key={user.id} user={user} />
         ))}

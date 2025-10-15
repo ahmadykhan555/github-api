@@ -52,6 +52,7 @@ export const useUsers = (): UseUsersReturn => {
   }, []);
 
   const getUserRepositories = useCallback(async (username: string) => {
+    setUserRepositories([]);
     setIsLoadingRepositories(true);
     try {
       const response = await fetch(`${GITHUB_API_BASE}/users/${username}/repos`);

@@ -1,17 +1,17 @@
 import { useState, useCallback } from 'react';
 import type { GitHubRepository, GitHubSearchResponse, UseGithubApiReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
-import useGlobalStore from '../store/useGlobalStore';
+import { useSearchSlice, useUserSlice } from '../store';
 
 export const useGithubApi = (): UseGithubApiReturn => {
   const {
-    userSearchResults,
-    setUserSearchResults,
-    setIsLoadingUsers,
-    setUserRepositories,
-    setIsLoadingRepositories,
-  } = useGlobalStore();
-
+    setSearchResults: setUserSearchResults,
+    setIsSearching,
+    searchResults,
+    setError: setSearchError,
+  } = useSearchSlice();
+  const { setUserRepositories, setIsLoadingUserRepositories, setUserRepositoriesError } =
+    useUserSlice();
   const [error, setError] = useState<string | null>(null);
 
   const searchUsers = useCallback(async (query: string) => {
@@ -22,7 +22,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
 
     clearUsers();
 
-    setIsLoadingUsers(true);
+    setIsSearching(true);
     setError(null);
 
     try {
@@ -32,6 +32,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
 
       if (!response.ok) {
         if (response.status === 403) {
+          setSearchError('GitHub API rate limit exceeded. Please try again later.');
           throw new Error('GitHub API rate limit exceeded. Please try again later.');
         }
         throw new Error(`Failed to fetch users: ${response.statusText}`);
@@ -41,44 +42,47 @@ export const useGithubApi = (): UseGithubApiReturn => {
       setUserSearchResults(data.items);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
-      setError(errorMessage);
+      setSearchError(errorMessage);
       setUserSearchResults([]);
     } finally {
-      setIsLoadingUsers(false);
+      setIsSearching(false);
     }
   }, []);
 
   const clearUsers = useCallback(() => {
     setUserSearchResults([]);
-    setError(null);
+    setSearchError(null);
   }, []);
 
   const getUserRepositories = useCallback(async (username: string) => {
     setUserRepositories([]);
-    setIsLoadingRepositories(true);
+    setIsLoadingUserRepositories(true);
     try {
       const response = await fetch(`${GITHUB_API_BASE}/users/${username}/repos`);
       const data: GitHubRepository[] = await response.json();
 
       if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error('GitHub API rate limit exceeded. Please try again later.');
-        }
-        throw new Error(`Failed to fetch user repositories: ${response.statusText}`);
+        const errorMessage =
+          response.status === 403
+            ? 'GitHub API rate limit exceeded. Please try again later.'
+            : `Failed to fetch user repositories: ${response.statusText}`;
+        setUserRepositoriesError(errorMessage);
+        setUserRepositories([]);
+        throw new Error(errorMessage);
       }
 
       setUserRepositories(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      setError(errorMessage);
+      setUserRepositoriesError(errorMessage);
       setUserRepositories([]);
     } finally {
-      setIsLoadingRepositories(false);
+      setIsLoadingUserRepositories(false);
     }
   }, []);
 
   return {
-    users: userSearchResults,
+    users: searchResults,
     error,
     searchUsers,
     clearUsers,

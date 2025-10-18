@@ -25,7 +25,7 @@ const UserSearchDashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 !max-h-full">
       <div className="w-full max-w-md my-8">
         <div className="relative">
           <input
@@ -51,7 +51,7 @@ const UserSearchDashboard: React.FC = () => {
       </div>
 
       {/* Results Row */}
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-4xl max-h-[calc(100vh-280px)] md:max-h-[calc(100vh-300px)] overflow-y-auto">
         <div className="bg-gray-700 rounded-lg p-6 min-h-[200px] ">
           <h3 className="text-white text-lg font-semibold mb-4">Search Results</h3>
           <UserList />

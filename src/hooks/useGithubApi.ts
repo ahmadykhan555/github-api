@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import type { GitHubRepository, GitHubSearchResponse, UseGithubApiReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
 import { useSearchSlice, useUserSlice } from '../store';
+import { useErrorHandling } from './useErrorHandling';
 
 export const useGithubApi = (): UseGithubApiReturn => {
   const {
@@ -12,7 +13,8 @@ export const useGithubApi = (): UseGithubApiReturn => {
   } = useSearchSlice();
   const { setUserRepositories, setIsLoadingUserRepositories, setUserRepositoriesError } =
     useUserSlice();
-  const [error, setError] = useState<string | null>(null);
+
+  const { parseAPIError } = useErrorHandling();
 
   const searchUsers = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -22,7 +24,6 @@ export const useGithubApi = (): UseGithubApiReturn => {
 
     clearUsers();
     setIsSearching(true);
-    setError(null);
 
     try {
       const response = await fetch(
@@ -45,7 +46,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
 
       const data: GitHubSearchResponse = await response.json();
       setUserSearchResults(data.items);
-    } catch (err) {
+    } catch (error) {
       const { errorMessage } = parseAPIError({ error, context: 'search' });
       if (errorMessage) {
         setSearchError(errorMessage);
@@ -95,36 +96,8 @@ export const useGithubApi = (): UseGithubApiReturn => {
 
   return {
     users: searchResults,
-    error,
     searchUsers,
     clearUsers,
     getUserRepositories,
-  };
-};
-
-const parseAPIError = ({
-  error,
-  statusCode = -1,
-  context,
-  method = 'GET',
-}: {
-  error?: unknown;
-  statusCode?: number;
-  context: 'search' | 'repositories';
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-}): { errorMessage: string; throwException: boolean } => {
-  let errorMessage = '';
-
-  if (statusCode === 403) {
-    errorMessage = `${method} ${context} failed: GitHub API rate limit exceeded. Please try again later.`;
-  } else if (error) {
-    errorMessage = `${method} ${context} failed: ${error instanceof Error ? error.message : 'An unexpected error occurred'}`;
-  } else {
-    errorMessage = `${method} ${context} failed: An unexpected error occurred}`;
-  }
-
-  return {
-    errorMessage,
-    throwException: [403, 500].includes(statusCode),
   };
 };

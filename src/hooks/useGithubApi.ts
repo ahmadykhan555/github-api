@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import type { GitHubRepository, GitHubSearchResponse, UseGithubApiReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
 import { useSearchSlice, useUserSlice } from '../store';

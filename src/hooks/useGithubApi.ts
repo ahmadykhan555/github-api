@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import type { GitHubRepository, GitHubSearchResponse, UseGithubApiReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
 import { useSearchSlice, useUserSlice } from '../store';
+import { useErrorHandling } from './useErrorHandling';
 
 export const useGithubApi = (): UseGithubApiReturn => {
   const {
@@ -12,7 +13,8 @@ export const useGithubApi = (): UseGithubApiReturn => {
   } = useSearchSlice();
   const { setUserRepositories, setIsLoadingUserRepositories, setUserRepositoriesError } =
     useUserSlice();
-  const [error, setError] = useState<string | null>(null);
+
+  const { parseAPIError } = useErrorHandling();
 
   const searchUsers = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -21,9 +23,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
     }
 
     clearUsers();
-
     setIsSearching(true);
-    setError(null);
 
     try {
       const response = await fetch(
@@ -31,18 +31,27 @@ export const useGithubApi = (): UseGithubApiReturn => {
       );
 
       if (!response.ok) {
-        if (response.status === 403) {
-          setSearchError('GitHub API rate limit exceeded. Please try again later.');
-          throw new Error('GitHub API rate limit exceeded. Please try again later.');
+        const { errorMessage, throwException } = parseAPIError({
+          statusCode: response.status,
+          context: 'search',
+        });
+
+        setSearchError(errorMessage);
+        setUserSearchResults([]);
+
+        if (throwException) {
+          throw new Error(errorMessage);
         }
-        throw new Error(`Failed to fetch users: ${response.statusText}`);
       }
 
       const data: GitHubSearchResponse = await response.json();
       setUserSearchResults(data.items);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
-      setSearchError(errorMessage);
+    } catch (error) {
+      const { errorMessage } = parseAPIError({ error, context: 'search' });
+      if (errorMessage) {
+        setSearchError(errorMessage);
+      }
+
       setUserSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -62,13 +71,17 @@ export const useGithubApi = (): UseGithubApiReturn => {
       const data: GitHubRepository[] = await response.json();
 
       if (!response.ok) {
-        const errorMessage =
-          response.status === 403
-            ? 'GitHub API rate limit exceeded. Please try again later.'
-            : `Failed to fetch user repositories: ${response.statusText}`;
+        const { errorMessage, throwException } = parseAPIError({
+          statusCode: response.status,
+          context: 'repositories',
+        });
+
         setUserRepositoriesError(errorMessage);
         setUserRepositories([]);
-        throw new Error(errorMessage);
+
+        if (throwException) {
+          throw new Error(errorMessage);
+        }
       }
 
       setUserRepositories(data);
@@ -83,7 +96,6 @@ export const useGithubApi = (): UseGithubApiReturn => {
 
   return {
     users: searchResults,
-    error,
     searchUsers,
     clearUsers,
     getUserRepositories,

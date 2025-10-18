@@ -1,7 +1,8 @@
-import useGlobalStore from '../../store/useGlobalStore';
+import ExternalLinkIcon from '../../assets/icons/external-link.svg';
+import { useUserSlice } from '../../store';
 
 export const UserRepositoriesList: React.FC<{}> = () => {
-  const { userRepositories } = useGlobalStore();
+  const { userRepositories, isLoadingUserRepositories: isLoadingRepositories } = useUserSlice();
 
   const handleRepositoryClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.stopPropagation();
@@ -9,9 +10,11 @@ export const UserRepositoriesList: React.FC<{}> = () => {
 
   return (
     <div className="mt-4 pt-4 border-t border-gray-500">
-      <h5 className="text-white font-medium mb-3 text-sm">
-        Repositories ({userRepositories.length})
-      </h5>
+      {!isLoadingRepositories && (
+        <h5 className="text-white font-medium mb-3 text-sm">
+          Repositories ({userRepositories.length})
+        </h5>
+      )}
       <div className="space-y-3 max-h-64 overflow-y-auto">
         {userRepositories.map((repository) => (
           <div
@@ -45,11 +48,8 @@ export const UserRepositoriesList: React.FC<{}> = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img
-                    src="/src/assets/icons/external-link.svg"
-                    alt="External link"
-                    className="w-4 h-4 text-gray-400"
-                  />
+                  {/* @ts-ignore */}
+                  <ExternalLinkIcon className={`w-4 h-4 text-white`} />
                 </a>
               </div>
             </div>

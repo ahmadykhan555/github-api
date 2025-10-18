@@ -1,9 +1,9 @@
-import useGlobalStore from '../../store/useGlobalStore';
+import { useUserSlice } from '../../store';
 import type { GitHubUser } from '../../types';
 import { UserRepositoriesList } from './UserRepositoriesList';
 
 const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
-  const { setSelectedUser, selectedUser } = useGlobalStore();
+  const { setSelectedUser, selectedUser } = useUserSlice();
 
   const toggleUserSelection = () => {
     if (selectedUser?.id === user.id) {

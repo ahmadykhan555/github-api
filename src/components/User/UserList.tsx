@@ -2,18 +2,19 @@ import React, { useEffect } from 'react';
 import { useGithubApi } from '../../hooks/useGithubApi';
 import type { GitHubUser } from '../../types/github';
 import UserCard from './UserCard';
-import useGlobalStore from '../../store/useGlobalStore';
 import { UserListLoadingState } from './UserListLoadingState';
 import { UserListEmptyState } from './UserListEmptyState';
 import { UserListErrorState } from './UserListErrorState';
+import { useSearchSlice, useUserSlice } from '../../store';
 
 interface UserListProps {
   // add props here if needed
 }
 
 const UserList: React.FC<UserListProps> = () => {
-  const { error, getUserRepositories } = useGithubApi();
-  const { userSearchResults: users, searchTerm, isLoadingUsers, selectedUser } = useGlobalStore();
+  const { getUserRepositories } = useGithubApi();
+  const { selectedUser } = useUserSlice();
+  const { searchTerm, searchResults: users, isSearching, error: searchError } = useSearchSlice();
 
   useEffect(() => {
     if (selectedUser) {
@@ -21,12 +22,12 @@ const UserList: React.FC<UserListProps> = () => {
     }
   }, [selectedUser, getUserRepositories]);
 
-  if (isLoadingUsers) {
+  if (isSearching) {
     return <UserListLoadingState />;
   }
 
-  if (error) {
-    return <UserListErrorState error={error} />;
+  if (searchError) {
+    return <UserListErrorState error={searchError} />;
   }
 
   if (!searchTerm.trim() || users.length === 0) {

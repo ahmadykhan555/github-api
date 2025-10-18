@@ -1,8 +1,8 @@
-import useGlobalStore from '../../store/useGlobalStore';
 import ExternalLinkIcon from '../../assets/icons/external-link.svg';
+import { useUserSlice } from '../../store';
 
 export const UserRepositoriesList: React.FC<{}> = () => {
-  const { userRepositories, isLoadingRepositories } = useGlobalStore();
+  const { userRepositories, isLoadingUserRepositories: isLoadingRepositories } = useUserSlice();
 
   const handleRepositoryClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.stopPropagation();

@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import UserList from './UserList';
-import useGlobalStore from '../../store/useGlobalStore';
 import { useGithubApi } from '../../hooks/useGithubApi';
-import SearchIcon from '../../assets/icons/search.svg';
+import { useSearchSlice } from '../../store';
 const UserSearchDashboard: React.FC = () => {
-  const { searchTerm, setSearchTerm } = useGlobalStore();
+  const { searchTerm, setSearchTerm } = useSearchSlice();
   const { searchUsers } = useGithubApi();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useUsers } from '../../hooks/useUsers';
-import { useDebounce } from '../../hooks/useDebounce';
 import type { GitHubUser } from '../../types/github';
 import UserCard from './UserCard';
 import useGlobalStore from '../../store/useGlobalStore';
@@ -13,17 +12,8 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = () => {
-  const { error, searchUsers, clearUsers, getUserRepositories } = useUsers();
+  const { error, getUserRepositories } = useUsers();
   const { userSearchResults: users, searchTerm, isLoadingUsers, selectedUser } = useGlobalStore();
-  const debouncedSearchTerm = useDebounce(searchTerm);
-
-  useEffect(() => {
-    if (debouncedSearchTerm.trim()) {
-      searchUsers(debouncedSearchTerm);
-    } else {
-      clearUsers();
-    }
-  }, [debouncedSearchTerm, searchUsers, clearUsers]);
 
   useEffect(() => {
     if (selectedUser) {
@@ -49,7 +39,7 @@ const UserList: React.FC<UserListProps> = () => {
         Showing {users.length} results for:{' '}
         <span className="text-white font-medium">"{searchTerm}"</span>
       </p>
-      <div className="flex-1 grid grid-cols-1 gap-4  overflow-y-auto">
+      <div className="flex-1 grid grid-cols-1 gap-4">
         {users.map((user: GitHubUser) => (
           <UserCard key={user.id} user={user} />
         ))}

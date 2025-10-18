@@ -2,6 +2,11 @@ import useGlobalStore from '../../store/useGlobalStore';
 
 export const UserRepositoriesList: React.FC<{}> = () => {
   const { userRepositories } = useGlobalStore();
+
+  const handleRepositoryClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.stopPropagation();
+  };
+
   return (
     <div className="mt-4 pt-4 border-t border-gray-500">
       <h5 className="text-white font-medium mb-3 text-sm">
@@ -34,19 +39,18 @@ export const UserRepositoriesList: React.FC<{}> = () => {
                 </div>
               </div>
               <div className="ml-2 flex-shrink-0">
-                <svg
-                  className="w-4 h-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <a
+                  onClick={handleRepositoryClick}
+                  href={repository.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  <img
+                    src="/src/assets/icons/external-link.svg"
+                    alt="External link"
+                    className="w-4 h-4 text-gray-400"
                   />
-                </svg>
+                </a>
               </div>
             </div>
           </div>

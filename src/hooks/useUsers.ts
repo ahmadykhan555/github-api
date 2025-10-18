@@ -20,6 +20,8 @@ export const useUsers = (): UseUsersReturn => {
       return;
     }
 
+    clearUsers();
+
     setIsLoadingUsers(true);
     setError(null);
 

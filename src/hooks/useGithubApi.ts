@@ -21,7 +21,6 @@ export const useGithubApi = (): UseGithubApiReturn => {
     }
 
     clearUsers();
-
     setIsSearching(true);
     setError(null);
 
@@ -31,18 +30,27 @@ export const useGithubApi = (): UseGithubApiReturn => {
       );
 
       if (!response.ok) {
-        if (response.status === 403) {
-          setSearchError('GitHub API rate limit exceeded. Please try again later.');
-          throw new Error('GitHub API rate limit exceeded. Please try again later.');
+        const { errorMessage, throwException } = parseAPIError({
+          statusCode: response.status,
+          context: 'search',
+        });
+
+        setSearchError(errorMessage);
+        setUserSearchResults([]);
+
+        if (throwException) {
+          throw new Error(errorMessage);
         }
-        throw new Error(`Failed to fetch users: ${response.statusText}`);
       }
 
       const data: GitHubSearchResponse = await response.json();
       setUserSearchResults(data.items);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
-      setSearchError(errorMessage);
+      const { errorMessage } = parseAPIError({ error, context: 'search' });
+      if (errorMessage) {
+        setSearchError(errorMessage);
+      }
+
       setUserSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -62,13 +70,17 @@ export const useGithubApi = (): UseGithubApiReturn => {
       const data: GitHubRepository[] = await response.json();
 
       if (!response.ok) {
-        const errorMessage =
-          response.status === 403
-            ? 'GitHub API rate limit exceeded. Please try again later.'
-            : `Failed to fetch user repositories: ${response.statusText}`;
+        const { errorMessage, throwException } = parseAPIError({
+          statusCode: response.status,
+          context: 'repositories',
+        });
+
         setUserRepositoriesError(errorMessage);
         setUserRepositories([]);
-        throw new Error(errorMessage);
+
+        if (throwException) {
+          throw new Error(errorMessage);
+        }
       }
 
       setUserRepositories(data);
@@ -87,5 +99,32 @@ export const useGithubApi = (): UseGithubApiReturn => {
     searchUsers,
     clearUsers,
     getUserRepositories,
+  };
+};
+
+const parseAPIError = ({
+  error,
+  statusCode = -1,
+  context,
+  method = 'GET',
+}: {
+  error?: unknown;
+  statusCode?: number;
+  context: 'search' | 'repositories';
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+}): { errorMessage: string; throwException: boolean } => {
+  let errorMessage = '';
+
+  if (statusCode === 403) {
+    errorMessage = `${method} ${context} failed: GitHub API rate limit exceeded. Please try again later.`;
+  } else if (error) {
+    errorMessage = `${method} ${context} failed: ${error instanceof Error ? error.message : 'An unexpected error occurred'}`;
+  } else {
+    errorMessage = `${method} ${context} failed: An unexpected error occurred}`;
+  }
+
+  return {
+    errorMessage,
+    throwException: [403, 500].includes(statusCode),
   };
 };

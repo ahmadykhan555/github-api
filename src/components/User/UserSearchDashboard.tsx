@@ -39,6 +39,7 @@ const UserSearchDashboard: React.FC = () => {
             tooltipText={
               !searchTerm ? 'Enter a search term to search for users' : 'Search for users'
             }
+            id="user-search-input"
             placeholder="Search for a GitHub user..."
           />
         </div>

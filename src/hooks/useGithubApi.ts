@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
-import type { GitHubRepository, GitHubSearchResponse, UseUsersReturn } from '../types/github';
+import type { GitHubRepository, GitHubSearchResponse, UseGithubApiReturn } from '../types/github';
 import { GITHUB_API_BASE, USER_SEARCH_LIMIT } from '../constants';
 import useGlobalStore from '../store/useGlobalStore';
 
-export const useUsers = (): UseUsersReturn => {
+export const useGithubApi = (): UseGithubApiReturn => {
   const {
     userSearchResults,
     setUserSearchResults,

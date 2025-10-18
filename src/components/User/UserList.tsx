@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useUsers } from '../../hooks/useUsers';
+import { useGithubApi } from '../../hooks/useGithubApi';
 import type { GitHubUser } from '../../types/github';
 import UserCard from './UserCard';
 import useGlobalStore from '../../store/useGlobalStore';
@@ -12,7 +12,7 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = () => {
-  const { error, getUserRepositories } = useUsers();
+  const { error, getUserRepositories } = useGithubApi();
   const { userSearchResults: users, searchTerm, isLoadingUsers, selectedUser } = useGlobalStore();
 
   useEffect(() => {

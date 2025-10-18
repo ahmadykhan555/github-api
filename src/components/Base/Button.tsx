@@ -39,7 +39,7 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
   return (
     <button
       title={tooltipText}
-      className={`${buttonClasses()} ${classes}`}
+      className={`${buttonClasses()} ${classes} max-w-32 truncate`}
       onClick={onClickHandler}
       aria-label={tooltipText || `click to ${text}`}
       disabled={disabled}

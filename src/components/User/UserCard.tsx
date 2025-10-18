@@ -1,8 +1,9 @@
+import React from 'react';
 import { useUserSlice } from '../../store';
 import type { GitHubUser } from '../../types';
 import { UserRepositoriesList } from './UserRepositoriesList';
 
-const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
+const UserCard: React.FC<{ user: GitHubUser }> = React.memo(({ user }) => {
   const { setSelectedUser, selectedUser } = useUserSlice();
 
   const toggleUserSelection = () => {
@@ -47,6 +48,6 @@ const UserCard: React.FC<{ user: GitHubUser }> = ({ user }) => {
       {selectedUser?.id === user.id && <UserRepositoriesList />}
     </div>
   );
-};
+});
 
 export default UserCard;

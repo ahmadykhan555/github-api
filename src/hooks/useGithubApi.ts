@@ -9,6 +9,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
     setSearchResults: setUserSearchResults,
     setIsSearching,
     searchResults,
+    setResultsCount,
     setError: setSearchError,
   } = useSearchSlice();
   const { setUserRepositories, setIsLoadingUserRepositories, setUserRepositoriesError } =
@@ -46,6 +47,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
 
       const data: GitHubSearchResponse = await response.json();
       setUserSearchResults(data.items);
+      setResultsCount(data.total_count);
     } catch (error) {
       const { errorMessage } = parseAPIError({ error, context: 'search' });
       if (errorMessage) {

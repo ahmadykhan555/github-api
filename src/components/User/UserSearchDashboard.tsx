@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import UserList from './UserList';
 import { useGithubApi } from '../../hooks/useGithubApi';
 import { useSearchSlice } from '../../store';
 import BaseInput from '../Base/Input';
 const UserSearchDashboard: React.FC = () => {
   const { searchTerm, setSearchTerm } = useSearchSlice();
-  const { searchUsers } = useGithubApi();
+  const { searchUsers, clearUsers } = useGithubApi();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -17,13 +17,11 @@ const UserSearchDashboard: React.FC = () => {
     }
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (!searchTerm.trim()) {
+      clearUsers();
     }
-  }, []);
+  }, [searchTerm]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 !max-h-full">

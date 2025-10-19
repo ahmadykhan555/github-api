@@ -69,7 +69,9 @@ export const useGithubApi = (): UseGithubApiReturn => {
     setUserRepositories([]);
     setIsLoadingUserRepositories(true);
     try {
-      const response = await fetch(`${GITHUB_API_BASE}/users/${username}/repos`);
+      const response = await fetch(
+        `${GITHUB_API_BASE}/users/${username}/repos?sort=created&direction=desc`
+      );
       const data: GitHubRepository[] = await response.json();
 
       if (!response.ok) {

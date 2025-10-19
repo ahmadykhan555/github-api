@@ -38,7 +38,6 @@ export const RepositoryCard: React.FC<{ repository: GitHubRepository }> = React.
               target="_blank"
               rel="noopener noreferrer"
             >
-              {/* @ts-ignore */}
               <ExternalLinkIcon className={`w-4 h-4 text-white`} />
             </a>
           </div>

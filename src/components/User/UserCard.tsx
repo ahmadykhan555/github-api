@@ -40,8 +40,8 @@ const UserCard: React.FC<{ user: GitHubUser }> = React.memo(({ user }) => {
         </div>
 
         <div className="flex-shrink-0">
-          {/* @ts-ignore */}
-          <ChevronDownIcon   className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isSelected ? 'rotate-180' : 'rotate-0'}`}
+          <ChevronDownIcon
+            className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isSelected ? 'rotate-180' : 'rotate-0'}`}
           />
         </div>
       </div>

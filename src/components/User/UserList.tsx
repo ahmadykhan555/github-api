@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useGithubApi } from '../../hooks/useGithubApi';
 import type { GitHubUser } from '../../types/github';
 import UserCard from './UserCard';
@@ -7,11 +7,7 @@ import { UserListEmptyState } from './UserListEmptyState';
 import { UserListErrorState } from './UserListErrorState';
 import { useSearchSlice, useUserSlice } from '../../store';
 
-interface UserListProps {
-  // add props here if needed
-}
-
-const UserList: React.FC<UserListProps> = () => {
+const UserList = () => {
   const { getUserRepositories } = useGithubApi();
   const { selectedUser } = useUserSlice();
   const {

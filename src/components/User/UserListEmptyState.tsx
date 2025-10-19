@@ -1,6 +1,6 @@
 import { useSearchSlice } from '../../store';
 
-export const UserListEmptyState: React.FC<{}> = () => {
+export const UserListEmptyState = () => {
   const { isSearching } = useSearchSlice();
   return (
     !isSearching && (

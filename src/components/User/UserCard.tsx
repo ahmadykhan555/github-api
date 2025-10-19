@@ -2,12 +2,14 @@ import React from 'react';
 import { useUserSlice } from '../../store';
 import type { GitHubUser } from '../../types';
 import { UserRepositoriesList } from '../Repository/UserRepositoriesList';
+import ChevronDownIcon from '../../assets/icons/chevron-down.svg';
 
 const UserCard: React.FC<{ user: GitHubUser }> = React.memo(({ user }) => {
   const { setSelectedUser, selectedUser } = useUserSlice();
+  const isSelected = selectedUser?.id === user.id;
 
   const toggleUserSelection = () => {
-    if (selectedUser?.id === user.id) {
+    if (isSelected) {
       setSelectedUser(null);
     } else {
       setSelectedUser(user);
@@ -16,7 +18,7 @@ const UserCard: React.FC<{ user: GitHubUser }> = React.memo(({ user }) => {
 
   return (
     <div
-      className={`bg-gray-600 rounded-lg p-4 hover:bg-gray-500 transition-colors  cursor-pointer`}
+      className={`bg-gray-600 rounded-lg p-4 hover:bg-gray-500 transition-colors cursor-pointer`}
       onClick={toggleUserSelection}
     >
       {/* user information like name avatar etc */}
@@ -36,9 +38,19 @@ const UserCard: React.FC<{ user: GitHubUser }> = React.memo(({ user }) => {
             <span>{user.public_repos} repos</span>
           </div>
         </div>
+
+        <div className="flex-shrink-0">
+          {/* @ts-ignore */}
+          <ChevronDownIcon
+            className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+              isSelected ? 'rotate-180' : 'rotate-0'
+            }`}
+          />
+        </div>
       </div>
+
       {/* user repositories information */}
-      {selectedUser?.id === user.id && <UserRepositoriesList />}
+      {isSelected && <UserRepositoriesList />}
     </div>
   );
 });

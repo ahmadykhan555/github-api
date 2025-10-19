@@ -28,14 +28,7 @@ const UserCard: React.FC<{ user: GitHubUser }> = React.memo(({ user }) => {
         />
         <div className="flex-1 min-w-0">
           <h4 className="text-white font-medium truncate">
-            <a
-              href={user.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-400 transition-colors"
-            >
-              {user.login}
-            </a>
+            <p>{user.login}</p>
           </h4>
           {user.name && <p className="text-gray-300 text-sm truncate">{user.name}</p>}
           <div className="flex space-x-4 text-xs text-gray-400 mt-1">

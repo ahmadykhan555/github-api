@@ -1,7 +1,7 @@
 import React from 'react';
 import { useUserSlice } from '../../store';
 import type { GitHubUser } from '../../types';
-import { UserRepositoriesList } from './UserRepositoriesList';
+import { UserRepositoriesList } from '../Repository/UserRepositoriesList';
 
 const UserCard: React.FC<{ user: GitHubUser }> = React.memo(({ user }) => {
   const { setSelectedUser, selectedUser } = useUserSlice();

@@ -26,7 +26,6 @@ export interface GitHubSearchResponse {
 
 export interface UseGithubApiReturn {
   users: GitHubUser[];
-  error: string | null;
   searchUsers: (query: string) => Promise<void>;
   clearUsers: () => void;
   getUserRepositories: (username: string) => Promise<void>;

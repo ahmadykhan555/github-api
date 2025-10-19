@@ -14,7 +14,13 @@ interface UserListProps {
 const UserList: React.FC<UserListProps> = () => {
   const { getUserRepositories } = useGithubApi();
   const { selectedUser } = useUserSlice();
-  const { searchTerm, searchResults: users, isSearching, error: searchError } = useSearchSlice();
+  const {
+    searchTerm,
+    searchResults: users,
+    isSearching,
+    error: searchError,
+    resultsCount,
+  } = useSearchSlice();
 
   useEffect(() => {
     if (selectedUser) {
@@ -37,7 +43,7 @@ const UserList: React.FC<UserListProps> = () => {
   return (
     <div className="flex flex-col max-h-full ">
       <p className="text-gray-400 mb-4 ">
-        Showing {users.length} results for:{' '}
+        Showing {users.length} of {resultsCount} results for:{' '}
         <span className="text-white font-medium">"{searchTerm}"</span>
       </p>
       <div className="flex-1 grid grid-cols-1 gap-4">

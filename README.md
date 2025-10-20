@@ -265,8 +265,6 @@ npm run test:coverage
 - **Mocking**: GitHub API calls are mocked for reliable testing
 - **Coverage**: Minimum 80% code coverage requirement
 
-### Writing Tests
-
 #### Unit Tests
 
 Test individual components and hooks in isolation:
@@ -282,6 +280,52 @@ test('renders user information', () => {
   expect(screen.getByText('testuser')).toBeInTheDocument()
 })
 ```
+
+#### Integration Tests
+
+Test component interactions and data flow between multiple parts of the application:
+
+```typescript
+// Example: UserSearchIntegration.test.tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import UserSearchDashboard from './UserSearchDashboard'
+
+test('should handle complete search flow with API integration', async () => {
+  // Mock API response
+  mockFetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({
+      items: mockUsers,
+      total_count: 1,
+    }),
+  })
+
+  render(<UserSearchDashboard />)
+
+  // Test user interaction
+  const searchInput = screen.getByPlaceholderText('Search for a GitHub user...')
+  fireEvent.change(searchInput, { target: { value: 'octocat' } })
+  fireEvent.keyDown(searchInput, { key: 'Enter' })
+
+  // Verify API integration
+  await waitFor(() => {
+    expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/search/users?q=octocat'))
+  })
+
+  // Verify UI updates
+  await waitFor(() => {
+    expect(screen.getByText('octocat')).toBeInTheDocument()
+  })
+})
+```
+
+**Integration Test Coverage:**
+
+- **Component Integration**: Tests how multiple components work together
+- **API Integration**: Verifies proper API calls and response handling
+- **State Management**: Tests Zustand store integration with components
+- **User Interactions**: Simulates real user workflows (typing, clicking, keyboard events)
+- **Error Handling**: Tests error states and recovery mechanisms
 
 #### E2E Tests
 
@@ -304,6 +348,32 @@ test('user can search and view repositories', async ({ page }) => {
 - **API Responses**: Mock GitHub API responses for consistent testing
 - **Network Requests**: Intercept and mock fetch calls
 - **User Interactions**: Simulate real user behavior
+
+## 🔧 Code Quality & Git Hooks
+
+### Automated Code Quality
+
+The project uses **Husky** and **lint-staged** to ensure code quality and consistency across the entire codebase. This automated system runs quality checks at different stages of the development workflow.
+
+#### Pre-commit Hooks
+
+Before every commit, the following checks are automatically executed:
+
+```bash
+# Linting Check
+yarn lint
+# Code Formatting Check
+yarn format:check
+```
+
+#### Pre-push Hooks
+
+Before every push, the following check is executed:
+
+```bash
+# Run all tests
+yarn test:run
+```
 
 ## 🔍 Usage
 

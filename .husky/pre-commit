@@ -1,0 +1,21 @@
+echo "🔍 Running linting and formatting checks..."
+
+# check linting
+echo "Running ESLint..."
+yarn lint
+
+if [ $? -ne 0 ]; then
+  echo "❌ Linting failed! Commit aborted."
+  exit 1
+fi
+
+# check formatting
+echo "Checking code formatting..."
+yarn format:check
+
+if [ $? -ne 0 ]; then
+  echo "❌ Code formatting check failed! Please run 'yarn format' to fix formatting issues."
+  exit 1
+fi
+
+echo "✅ All checks passed! Proceeding with commit..."

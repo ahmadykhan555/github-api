@@ -18,7 +18,7 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
   onClickHandler,
 }) => {
   const buttonClasses = (): string => {
-    let classes = [
+    const classes = [
       'px-4 py-2 rounded-md text-xs md:text-sm disabled:opacity-50 disabled:cursor-not-allowed',
     ];
     switch (variant) {

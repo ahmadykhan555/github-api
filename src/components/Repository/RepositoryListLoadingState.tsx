@@ -1,6 +1,4 @@
-import React from 'react';
-
-export const RepositoryListLoadingState: React.FC<{}> = () => {
+export const RepositoryListLoadingState = () => {
   return (
     <div className="flex items-center justify-center py-8  flex-col gap-4">
       {[...Array(5)].map((_, index) => (

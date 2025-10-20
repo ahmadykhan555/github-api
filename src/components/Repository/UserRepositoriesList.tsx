@@ -2,7 +2,7 @@ import { useUserSlice } from '../../store';
 import { RepositoryCard } from './RepositoryCard';
 import { RepositoryListLoadingState } from './RepositoryListLoadingState';
 
-export const UserRepositoriesList: React.FC<{}> = () => {
+export const UserRepositoriesList = () => {
   const { userRepositories, isLoadingUserRepositories: isLoadingRepositories } = useUserSlice();
 
   return (

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useGithubApi } from '../../hooks/useGithubApi';
 import type { GitHubUser } from '../../types/github';
 import UserCard from './UserCard';
@@ -7,15 +7,11 @@ import { UserListEmptyState } from './UserListEmptyState';
 import { UserListErrorState } from './UserListErrorState';
 import { useSearchSlice, useUserSlice } from '../../store';
 
-interface UserListProps {
-  // add props here if needed
-}
-
-const UserList: React.FC<UserListProps> = () => {
+const UserList = () => {
   const { getUserRepositories } = useGithubApi();
   const { selectedUser } = useUserSlice();
   const {
-    searchTerm,
+    searchedTerm,
     searchResults: users,
     isSearching,
     error: searchError,
@@ -36,7 +32,7 @@ const UserList: React.FC<UserListProps> = () => {
     return <UserListErrorState error={searchError} />;
   }
 
-  if (!searchTerm.trim() || users.length === 0) {
+  if (!searchedTerm.trim() || users.length === 0) {
     return <UserListEmptyState />;
   }
 
@@ -44,7 +40,7 @@ const UserList: React.FC<UserListProps> = () => {
     <div className="flex flex-col max-h-full ">
       <p className="text-gray-400 mb-4 ">
         Showing {users.length} of {resultsCount} results for:{' '}
-        <span className="text-white font-medium">"{searchTerm}"</span>
+        <span className="text-white font-medium">"{searchedTerm}"</span>
       </p>
       <div className="flex-1 grid grid-cols-1 gap-4">
         {users.map((user: GitHubUser) => (

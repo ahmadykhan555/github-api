@@ -11,6 +11,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
     searchResults,
     setResultsCount,
     setError: setSearchError,
+    setSearchedTerm,
   } = useSearchSlice();
   const { setUserRepositories, setIsLoadingUserRepositories, setUserRepositoriesError } =
     useUserSlice();
@@ -46,6 +47,7 @@ export const useGithubApi = (): UseGithubApiReturn => {
       }
 
       const data: GitHubSearchResponse = await response.json();
+      setSearchedTerm(query);
       setUserSearchResults(data.items);
       setResultsCount(data.total_count);
     } catch (error) {

@@ -1,12 +1,14 @@
 import { useSearchSlice } from '../../store';
 
 export const UserListEmptyState = () => {
-  const { isSearching } = useSearchSlice();
+  const { isSearching, searchedTerm, resultsCount } = useSearchSlice();
   return (
-    !isSearching && (
-      <div className="text-gray-400 text-center py-8">
+    <div className="text-gray-400 text-center py-8">
+      {!isSearching && resultsCount === 0 && searchedTerm.trim() ? (
+        <p>No results found</p>
+      ) : (
         <p>Enter a username above to search for GitHub users</p>
-      </div>
-    )
+      )}
+    </div>
   );
 };

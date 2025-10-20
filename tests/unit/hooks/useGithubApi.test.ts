@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useGithubApi } from '../../../src/hooks/useGithubApi';
 import type { GitHubSearchResponse, GitHubUser, GitHubRepository } from '../../../src/types/github';
 
@@ -8,6 +8,7 @@ const mockSetSearchResults = vi.fn();
 const mockSetIsSearching = vi.fn();
 const mockSetResultsCount = vi.fn();
 const mockSetError = vi.fn();
+const mockSetSearchedTerm = vi.fn();
 const mockSetUserRepositories = vi.fn();
 const mockSetIsLoadingUserRepositories = vi.fn();
 const mockSetUserRepositoriesError = vi.fn();
@@ -19,6 +20,7 @@ vi.mock('../../../src/store', () => ({
     searchResults: [],
     setResultsCount: mockSetResultsCount,
     setError: mockSetError,
+    setSearchedTerm: mockSetSearchedTerm,
   }),
   useUserSlice: () => ({
     setUserRepositories: mockSetUserRepositories,
@@ -42,6 +44,9 @@ vi.mock('../../../src/hooks/useErrorHandling', () => ({
 const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
 
 describe('useGithubApi', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   it('should return the correct interface', () => {
     const { result } = renderHook(() => useGithubApi());
 
@@ -111,7 +116,7 @@ describe('useGithubApi', () => {
       );
 
       // Verify the results were set correctly
-      expect(mockSetSearchResults).toHaveBeenCalledWith(mockUsers);
+      expect(mockSetSearchResults).toHaveBeenLastCalledWith(mockUsers);
       expect(mockSetResultsCount).toHaveBeenCalledWith(1);
     });
 

@@ -78,7 +78,7 @@ src/
 
 ### State Management Architecture
 
-The application uses **Zustand** for state management with two main slices:
+The application uses **Zustand** for state management as the application state is not overly complex and Zustand provides a nice bloatfree solution which is very easy to work with and adheres well to React's hook's structure. There are with two main slices:
 
 #### Search Slice (`useSearchSlice`)
 
@@ -93,6 +93,10 @@ The application uses **Zustand** for state management with two main slices:
 - Provides actions for user selection and repository fetching
 
 ### API Integration
+
+#### HTTP Client
+
+- Browser fetch is used as it doesn't require any 3rd party package like axios to be integrated. If there arises a need for complex HTTP Handling I would go for axious or for even better fault tolerance pair it with RTK Query with integrated retry and caching possibilities.
 
 #### GitHub API Hook (`useGithubApi`)
 
@@ -215,26 +219,91 @@ const USER_SEARCH_LIMIT = 5; // Limits results for better UX
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check code formatting
 
-## 🎨 Design System
+## 🧪 Testing Setup
 
-### Color Palette
+### Testing Framework
 
-- **Background**: Dark gray (`bg-gray-800/95`)
-- **Cards**: Medium gray (`bg-gray-600`, `bg-gray-700`)
-- **Text**: White and light gray variants
-- **Accents**: Blue for links, green for CTAs
+The project is configured for comprehensive testing using:
 
-### Typography
+- **Playwright** - End-to-end testing for user interactions
+- **Vitest** - Unit and integration testing (recommended setup)
+- **React Testing Library** - Component testing utilities
 
-- **Headings**: Font weight 600-700
-- **Body**: Font weight 400-500
-- **Sizes**: Responsive text sizing with Tailwind utilities
+### Test Structure
 
-### Spacing
+```
+tests/
+├── __mocks__/           # Mock implementations
+├── e2e/                 # End-to-end tests
+├── unit/                # Unit tests
+└── integration/         # Integration tests
+```
 
-- **Consistent**: 4px base unit system
-- **Responsive**: Mobile-first spacing with breakpoint adjustments
-- **Component**: Internal padding and margins standardized
+### Running Tests
+
+```bash
+# Run all tests
+npm run test
+
+# Run unit tests only
+npm run test:unit
+
+# Run e2e tests
+npm run test:e2e
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate test coverage report
+npm run test:coverage
+```
+
+### Test Configuration
+
+- **Playwright**: Configured for cross-browser testing
+- **Vitest**: Fast unit testing with TypeScript support
+- **Mocking**: GitHub API calls are mocked for reliable testing
+- **Coverage**: Minimum 80% code coverage requirement
+
+### Writing Tests
+
+#### Unit Tests
+
+Test individual components and hooks in isolation:
+
+```typescript
+// Example: UserCard.test.tsx
+import { render, screen } from '@testing-library/react'
+import { UserCard } from './UserCard'
+
+test('renders user information', () => {
+  const mockUser = { login: 'testuser', avatar_url: '...' }
+  render(<UserCard user={mockUser} />)
+  expect(screen.getByText('testuser')).toBeInTheDocument()
+})
+```
+
+#### E2E Tests
+
+Test complete user workflows:
+
+```typescript
+// Example: user-search.spec.ts
+import { test, expect } from '@playwright/test';
+
+test('user can search and view repositories', async ({ page }) => {
+  await page.goto('/');
+  await page.fill('[data-testid="search-input"]', 'octocat');
+  await page.click('[data-testid="search-button"]');
+  await expect(page.locator('[data-testid="user-card"]')).toBeVisible();
+});
+```
+
+### Mock Strategy
+
+- **API Responses**: Mock GitHub API responses for consistent testing
+- **Network Requests**: Intercept and mock fetch calls
+- **User Interactions**: Simulate real user behavior
 
 ## 🔍 Usage
 
@@ -243,30 +312,3 @@ const USER_SEARCH_LIMIT = 5; // Limits results for better UX
 3. **Expand User**: Click on a user card to view their repositories
 4. **Browse Repositories**: Scroll through the user's repositories with creation/update dates
 5. **External Links**: Click repository names to open them on GitHub
-
-## 🚀 Deployment
-
-The application is built with Vite and can be deployed to any static hosting service:
-
-```bash
-npm run build
-```
-
-The built files will be in the `dist/` directory, ready for deployment to services like:
-
-- Vercel
-- Netlify
-- GitHub Pages
-- AWS S3 + CloudFront
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.

@@ -2,6 +2,18 @@
 
 A modern React application for searching GitHub users and viewing their repositories. Built with TypeScript, Vite, and Tailwind CSS, featuring a clean, responsive interface with real-time search capabilities.
 
+### Desktop
+<img width="2071" height="1289" alt="Screenshot 2025-10-21 at 00 21 44" src="https://github.com/user-attachments/assets/462be950-79d2-41d2-ac87-327185ad8617" />
+<img width="2071" height="1289" alt="Screenshot 2025-10-21 at 00 21 50" src="https://github.com/user-attachments/assets/92eb9d51-db01-4173-a951-cd13e453db37" />
+
+### Mobile
+<img height="600" alt="github-api-nine-rose vercel app_(iPhone 14 Pro Max)" src="https://github.com/user-attachments/assets/a380b6b8-5a0e-4030-b732-f90b9b03ec3e" />
+<br />
+
+### Tablet
+
+<img height="600" alt="github-api-nine-rose vercel app_(iPad Mini)" src="https://github.com/user-attachments/assets/dd77601c-7846-4a16-85a9-344a40e4f043" />
+
 ## 🚀 Features
 
 - **Real-time User Search**: Search GitHub users with instant results

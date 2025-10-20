@@ -21,7 +21,7 @@ const UserSearchDashboard: React.FC = () => {
     if (!searchTerm.trim()) {
       clearUsers();
     }
-  }, [searchTerm]);
+  }, [searchTerm, clearUsers]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 !max-h-full">
